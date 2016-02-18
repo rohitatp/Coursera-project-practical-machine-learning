@@ -1,0 +1,170 @@
+@@ -0,0 +1,168 @@
+---
+title: "Practical Machine Learning Project"
+author: "Rohit Aggarwal"
+date: "February 16, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is the code submitted by Rohit Aggarwal towards the Practical Machine learning project on Coursera.
+
+The goal is to use data from accelerometers on the belt, forearm, arm, and dumbbell of 6 participants and quantify in to classes how well they are doing a particular activity.
+
+## Include Relevant Packages
+
+```{r library}
+library(caret)
+library(ggplot2)
+library(lattice)
+library(randomForest)
+library(rattle)
+library(rpart)
+```
+## Load training and testing data
+
+```{r load}
+train <- read.csv('https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv', na.strings=c("NA",""), header=TRUE)
+test <- read.csv('https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv', na.strings=c("NA",""), header=TRUE)
+```
+
+## Cross-check data sets 
+
+Check if training and testing data set have same set of variables. Note that the last variable in training data is "classe" which is the output variable and the last variable in testing data is "problem_id" which needs to be ignored (eventually).
+
+```{r check, echo=TRUE}
+colnames_train <-colnames(train)
+colnames_test <-colnames(test)
+x <- length(colnames_train)
+all.equal(colnames_train[1:x-1], colnames_test[1:x-1])
+```
+
+## Set seed for reproducibility
+
+```{r seed}
+set.seed(1000)
+```
+
+## Check for near-zero variables with very low uniqueness
+
+```{r nzv}
+nsv <- nearZeroVar(train, saveMetrics=TRUE)
+which(nsv$nzv == TRUE)
+```
+
+## Reduce dimensionality of data set
+
+Since the output of previous command results in a number of variables as near-zero variables, we need to truncate our training sets based on that.
+
+```{r }
+train_trunc <- train[,-which(nsv$nzv==TRUE)]
+train_trunc <- train_trunc[c(-1)]
+dim(train_trunc)
+str(train_trunc)
+```
+
+## Further Clean-up
+Some variables in the resulting training set above have a lot of NAs. So, I am going to remove variables with a lot of NAs. If more than 70% of the data is NA in any column, then remove the column.
+
+```{r NA}
+new_train_trunc <- data.frame(matrix(ncol = ncol(train_trunc), nrow = nrow(train_trunc))) # create an empty data frame
+j <- 1
+for(i in 1:length(train_trunc))
+{
+	if(sum(is.na(train_trunc[,i]))/nrow(train_trunc) <= 0.6 )
+	{
+		new_train_trunc[,j] <- train_trunc[,i]
+		colnames(new_train_trunc)[j] <- colnames(train_trunc)[i]
+		class(new_train_trunc[,j]) <- class(train_trunc[,i])
+		j <- j + 1
+	}
+}
+new_train_trunc <- new_train_trunc[,-seq(j,max(j,ncol(new_train_trunc)))] # remove unnecessary columns from the data frame
+```
+
+Now, we must truncate the testing data as well to make sure it matches with the training data. First get all column names from training data except the "classe" variable
+
+```{r trunc}
+col_names_final <- colnames(new_train_trunc[, -ncol(new_train_trunc)])
+new_test_trunc <- test[col_names_final]
+colnames_train_v2 <-colnames(new_train_trunc)
+colnames_test_v2 <-colnames(new_test_trunc)
+x <- length(new_test_trunc)
+all.equal(colnames_train_v2[1:x], colnames_test_v2[1:x])
+```
+
+## Model Fitting 1 - using classification trees
+
+We are now ready to fit data and predict on testing. We will use classification tree first since it chooses the importance of variables automatically to build the predictor algorithm. Create a small cross-varidation set from training data to test accuracy
+
+```{r partition}
+set.seed(2000)
+crossvalidation <- createDataPartition(y=new_train_trunc$classe, p=0.25, list=FALSE)
+train_rpart <- new_train_trunc[-crossvalidation,]
+cv_rpart <- new_train_trunc[crossvalidation,]
+model_rpart <- train(classe ~., data = train_rpart, method = "rpart")
+fancyRpartPlot(model_rpart$finalModel)
+predictions_rpart <- predict(model_rpart, cv_rpart)
+confusionMatrix(predictions_rpart, cv_rpart$classe)
+predict(model_rpart, new_test_trunc)
+```
+
+## Classfication tree results
+
+The accuracy is 49.13% which is very low. To improve the accuracy, we try preprocessing of centering and scaling in case it improves.
+
+```{r rpart}
+model_rpart_v2 <- train(classe ~., data = train_rpart, preProcess=c("center", "scale"), method = "rpart")
+fancyRpartPlot(model_rpart_v2$finalModel)
+predictions_rpart_v2 <- predict(model_rpart_v2, cv_rpart)
+confusionMatrix(predictions_rpart_v2, cv_rpart$classe)
+```
+
+The accuracy remained unchanged at 66.13%. One way to improve the accuracy is by using multiple random samplings of data, predicting using classification trees on each random samplings, and using the majority predicted class as the final predicted class function. But, here, we will try an alternate approach of random forests. Using random forests automatically uses cross-validated sets and random sampling in its implementation, so we expect a higher accuracy. The downside is that it takes a longer time in t...(line truncated)...
+
+## Model Fitting 2 - using random forests
+
+```{r RF}
+set.seed(3000)
+train_subset <- createDataPartition(y=new_train_trunc$classe, p=0.1, list=FALSE) # use the training set as used in rpart
+train_rf <- new_train_trunc[train_subset,]
+model_rf <- train(classe ~. , data=train_rf, method="rf")
+```
+
+## Fine-tune model using only top 20 important variables
+
+```{r important_only}
+Imp_variables_obj <- varImp(model_rf)
+plot(Imp_variables_obj, main = "Top 20 important variables out of 80 in random forest model", 20)
+quantile_75 <- quantile(Imp_variables_obj$importance[,1], 0.75)
+Imp_variables_obj$importance[,1] > quantile_75
+important_variables <- c("cvtd_timestamp","roll_belt","pitch_forearm","raw_timestamp_part_1","accel_belt_z","roll_dumbbell","accel_forearm_x","yaw_belt","magnet_dumbbell_y","num_window","magnet_dumbbell_x","total_accel_belt","magnet_belt_y","magnet_dumbbell_z","accel_dumbbell_y","pitch_belt","pitch_dumbbell","roll_forearm","classe")
+
+final_train <- train_rpart[,important_variables]
+final_cv <- cv_rpart[,important_variables]
+final_test <- new_test_trunc[,important_variables[-19]] # remove "classe" from the test set as it does not exist in the test set
+```
+
+## Final Prediction
+Do final models based on random forests and predict it on final_cv_test for confusion matrix/accuracy. It takes a lot of time on my computer to run the random forests training model. To reduce the time, I run it on only 25% of training data ONCE. In practical cases, one would make 4 partitions (each 25% of training data set), train random forests on each and predict the 20 test cases from each of the 4 random forests. Finally, for each test case, we select the class that appears on the majority of 4 predict...(line truncated)...
+
+```{r final}
+partition <- createDataPartition(y = final_train$classe, p = 0.25, list = FALSE)
+model_rf_final <- train(classe ~. , data=final_train[partition,], method="rf")
+predictions_rf <- predict(model_rf_final, final_cv)
+confusionMatrix(predictions_rf, final_cv$classe)
+
+predictions_rf_test <- predict(model_rf_final, final_test)
+predictions_rf_test
+```
+
+## Out of Sample error
+
+cv_set <- final_train[-partition,]
+partition_cv <- createDataPartition(y = cv_set$classe, p = 0.25, list = FALSE)
+cv_set_trunc <- cv_set[partition_cv,]
+confusionMatrix(predict(model_rf_final, cv_set_trunc), cv_set_trunc$classe)
+\ No newline at end of file
