@@ -1,0 +1,438 @@
+@@ -0,0 +1,437 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Rohit Aggarwal" />
+
+<meta name="date" content="2016-02-16" />
+
+<title>Practical Machine Learning Project</title>
+
+<script src="data:application/x-javascript;base64,LyohIGpRdWVyeSB2MS4xMS4wIHwgKGMpIDIwMDUsIDIwMTQgalF1ZXJ5IEZvdW5kYXRpb24sIEluYy4gfCBqcXVlcnkub3JnL2xpY2Vuc2UgKi8KIWZ1bmN0aW9uKGEsYil7Im9iamVjdCI9PXR5cGVvZiBtb2R1bGUmJiJvYmplY3QiPT10eXBlb2YgbW9kdWxlLmV4cG9ydHM/bW9kdWxlLmV4cG9ydHM9YS5kb2N1bWVudD9iKGEsITApOmZ1bmN0aW9uKGEpe2lmKCFhLmRvY3VtZW50KXRocm93IG5ldyBFcnJvcigialF1ZXJ5IHJlcXVpcmVzIGEgd2luZG93IHdpdGggYSBkb2N1bWVudCIpO3JldHVybiBiKGEpfTpiKGEpfSgidW5kZWZpbmVkIiE9dHlwZW9mIHdpbmRvdz93aW5kb3c6dGhpcyxmdW5jdGlvbihhLG...(line truncated)...
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="data:text/css;charset=utf-8,html%7Bfont%2Dfamily%3Asans%2Dserif%3B%2Dwebkit%2Dtext%2Dsize%2Dadjust%3A100%25%3B%2Dms%2Dtext%2Dsize%2Dadjust%3A100%25%7Dbody%7Bmargin%3A0%7Darticle%2Caside%2Cdetails%2Cfigcaption%2Cfigure%2Cfooter%2Cheader%2Chgroup%2Cmain%2Cmenu%2Cnav%2Csection%2Csummary%7Bdisplay%3Ablock%7Daudio%2Ccanvas%2Cprogress%2Cvideo%7Bdisplay%3Ainline%2Dblock%3Bvertical%2Dalign%3Abaseline%7Daudio%3Anot%28%5Bcontrols%5D%29%7Bdisplay%3Anone%3Bheight%3A0%7D%5Bhidden%5D%2Ctemplate%7Bdisplay%3Ano...(line truncated)...
+<script src="data:application/x-javascript;base64,LyohCiAqIEJvb3RzdHJhcCB2My4zLjEgKGh0dHA6Ly9nZXRib290c3RyYXAuY29tKQogKiBDb3B5cmlnaHQgMjAxMS0yMDE0IFR3aXR0ZXIsIEluYy4KICogTGljZW5zZWQgdW5kZXIgTUlUIChodHRwczovL2dpdGh1Yi5jb20vdHdicy9ib290c3RyYXAvYmxvYi9tYXN0ZXIvTElDRU5TRSkKICovCmlmKCJ1bmRlZmluZWQiPT10eXBlb2YgalF1ZXJ5KXRocm93IG5ldyBFcnJvcigiQm9vdHN0cmFwJ3MgSmF2YVNjcmlwdCByZXF1aXJlcyBqUXVlcnkiKTsrZnVuY3Rpb24oYSl7dmFyIGI9YS5mbi5qcXVlcnkuc3BsaXQoIiAiKVswXS5zcGxpdCgiLiIpO2lmKGJbMF08MiYmYlsxXTw5fHwxPT1iWzBdJiY5PT1iWz...(line truncated)...
+<script src="data:application/x-javascript;base64,LyoqCiogQHByZXNlcnZlIEhUTUw1IFNoaXYgMy43LjIgfCBAYWZhcmthcyBAamRhbHRvbiBAam9uX25lYWwgQHJlbSB8IE1JVC9HUEwyIExpY2Vuc2VkCiovCi8vIE9ubHkgcnVuIHRoaXMgY29kZSBpbiBJRSA4CmlmICghIXdpbmRvdy5uYXZpZ2F0b3IudXNlckFnZW50Lm1hdGNoKCJNU0lFIDgiKSkgewohZnVuY3Rpb24oYSxiKXtmdW5jdGlvbiBjKGEsYil7dmFyIGM9YS5jcmVhdGVFbGVtZW50KCJwIiksZD1hLmdldEVsZW1lbnRzQnlUYWdOYW1lKCJoZWFkIilbMF18fGEuZG9jdW1lbnRFbGVtZW50O3JldHVybiBjLmlubmVySFRNTD0ieDxzdHlsZT4iK2IrIjwvc3R5bGU+IixkLmluc2VydEJlZm9yZShjLm...(line truncated)...
+<script src="data:application/x-javascript;base64,LyohIFJlc3BvbmQuanMgdjEuNC4yOiBtaW4vbWF4LXdpZHRoIG1lZGlhIHF1ZXJ5IHBvbHlmaWxsICogQ29weXJpZ2h0IDIwMTMgU2NvdHQgSmVobAogKiBMaWNlbnNlZCB1bmRlciBodHRwczovL2dpdGh1Yi5jb20vc2NvdHRqZWhsL1Jlc3BvbmQvYmxvYi9tYXN0ZXIvTElDRU5TRS1NSVQKICogICovCgppZiAoISF3aW5kb3cubmF2aWdhdG9yLnVzZXJBZ2VudC5tYXRjaCgiTVNJRSA4IikpIHsKIWZ1bmN0aW9uKGEpeyJ1c2Ugc3RyaWN0IjthLm1hdGNoTWVkaWE9YS5tYXRjaE1lZGlhfHxmdW5jdGlvbihhKXt2YXIgYixjPWEuZG9jdW1lbnRFbGVtZW50LGQ9Yy5maXJzdEVsZW1lbnRDaGlsZHx8Yy5maXJzdE...(line truncated)...
+
+<style type="text/css">code{white-space: pre;}</style>
+<link href="data:text/css;charset=utf-8,pre%20%2Eoperator%2C%0Apre%20%2Eparen%20%7B%0Acolor%3A%20rgb%28104%2C%20118%2C%20135%29%0A%7D%0Apre%20%2Eliteral%20%7B%0Acolor%3A%20%23990073%0A%7D%0Apre%20%2Enumber%20%7B%0Acolor%3A%20%23099%3B%0A%7D%0Apre%20%2Ecomment%20%7B%0Acolor%3A%20%23998%3B%0Afont%2Dstyle%3A%20italic%0A%7D%0Apre%20%2Ekeyword%20%7B%0Acolor%3A%20%23900%3B%0Afont%2Dweight%3A%20bold%0A%7D%0Apre%20%2Eidentifier%20%7B%0Acolor%3A%20rgb%280%2C%200%2C%200%29%3B%0A%7D%0Apre%20%2Estring%20%7B%0Acolor%3A%...(line truncated)...
+<script src="data:application/x-javascript;base64,CnZhciBobGpzPW5ldyBmdW5jdGlvbigpe2Z1bmN0aW9uIG0ocCl7cmV0dXJuIHAucmVwbGFjZSgvJi9nbSwiJmFtcDsiKS5yZXBsYWNlKC88L2dtLCImbHQ7Iil9ZnVuY3Rpb24gZihyLHEscCl7cmV0dXJuIFJlZ0V4cChxLCJtIisoci5jST8iaSI6IiIpKyhwPyJnIjoiIikpfWZ1bmN0aW9uIGIocil7Zm9yKHZhciBwPTA7cDxyLmNoaWxkTm9kZXMubGVuZ3RoO3ArKyl7dmFyIHE9ci5jaGlsZE5vZGVzW3BdO2lmKHEubm9kZU5hbWU9PSJDT0RFIil7cmV0dXJuIHF9aWYoIShxLm5vZGVUeXBlPT0zJiZxLm5vZGVWYWx1ZS5tYXRjaCgvXHMrLykpKXticmVha319fWZ1bmN0aW9uIGgodCxzKXt2YXIgcD0iIjtmb3...(line truncated)...
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type="text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img { 
+  max-width:100%; 
+  height: auto; 
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div id="header">
+<h1 class="title">Practical Machine Learning Project</h1>
+<h4 class="author"><em>Rohit Aggarwal</em></h4>
+<h4 class="date"><em>February 16, 2016</em></h4>
+</div>
+
+
+<p>This is the code submitted by Rohit Aggarwal towards the Practical Machine learning project on Coursera.</p>
+<div id="include-relevant-packages" class="section level2">
+<h2>Include Relevant Packages</h2>
+<pre class="r"><code>library(caret)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(lattice)
+library(randomForest)</code></pre>
+<pre><code>## randomForest 4.6-12</code></pre>
+<pre><code>## Type rfNews() to see new features/changes/bug fixes.</code></pre>
+<pre><code>## 
+## Attaching package: 'randomForest'</code></pre>
+<pre><code>## The following object is masked from 'package:ggplot2':
+## 
+##     margin</code></pre>
+<pre class="r"><code>library(rattle)</code></pre>
+<pre><code>## Rattle: A free graphical interface for data mining with R.
+## Version 4.0.5 Copyright (c) 2006-2015 Togaware Pty Ltd.
+## Type 'rattle()' to shake, rattle, and roll your data.</code></pre>
+<pre class="r"><code>library(rpart)</code></pre>
+</div>
+<div id="load-training-and-testing-data" class="section level2">
+<h2>Load training and testing data</h2>
+<pre class="r"><code>train &lt;- read.csv('https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv', na.strings=c(&quot;NA&quot;,&quot;&quot;), header=TRUE)
+test &lt;- read.csv('https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv', na.strings=c(&quot;NA&quot;,&quot;&quot;), header=TRUE)</code></pre>
+</div>
+<div id="cross-check-data-sets" class="section level2">
+<h2>Cross-check data sets</h2>
+<p>Check if training and testing data set have same set of variables. Note that the last variable in training data is “classe” which is the output variable and the last variable in testing data is “problem_id” which needs to be ignored (eventually).</p>
+<pre class="r"><code>colnames_train &lt;-colnames(train)
+colnames_test &lt;-colnames(test)
+x &lt;- length(colnames_train)
+all.equal(colnames_train[1:x-1], colnames_test[1:x-1])</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="set-seed-for-reproducibility" class="section level2">
+<h2>Set seed for reproducibility</h2>
+<pre class="r"><code>set.seed(1000)</code></pre>
+</div>
+<div id="check-for-near-zero-variables-with-very-low-uniqueness" class="section level2">
+<h2>Check for near-zero variables with very low uniqueness</h2>
+<pre class="r"><code>nsv &lt;- nearZeroVar(train, saveMetrics=TRUE)
+which(nsv$nzv == TRUE)</code></pre>
+<pre><code>##  [1]   6  14  17  26  51  52  53  54  55  56  57  58  59  69  70  72  73
+## [18]  75  78  79  81  82  89  92 101 125 126 127 128 129 130 131 134 137
+## [35] 142 143 144 145 146 147 148 149 150</code></pre>
+</div>
+<div id="reduce-dimensionality-of-data-set" class="section level2">
+<h2>Reduce dimensionality of data set</h2>
+<p>Since the output of previous command results in a number of variables as near-zero variables, we need to truncate our training sets based on that.</p>
+<pre class="r"><code>train_trunc &lt;- train[,-which(nsv$nzv==TRUE)]
+train_trunc &lt;- train_trunc[c(-1)]
+dim(train_trunc)</code></pre>
+<pre><code>## [1] 19622   116</code></pre>
+<pre class="r"><code>str(train_trunc)</code></pre>
+<pre><code>## 'data.frame':    19622 obs. of  116 variables:
+##  $ user_name               : Factor w/ 6 levels &quot;adelmo&quot;,&quot;carlitos&quot;,..: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ raw_timestamp_part_1    : int  1323084231 1323084231 1323084231 1323084232 1323084232 1323084232 1323084232 1323084232 1323084232 1323084232 ...
+##  $ raw_timestamp_part_2    : int  788290 808298 820366 120339 196328 304277 368296 440390 484323 484434 ...
+##  $ cvtd_timestamp          : Factor w/ 20 levels &quot;02/12/2011 13:32&quot;,..: 9 9 9 9 9 9 9 9 9 9 ...
+##  $ num_window              : int  11 11 11 12 12 12 12 12 12 12 ...
+##  $ roll_belt               : num  1.41 1.41 1.42 1.48 1.48 1.45 1.42 1.42 1.43 1.45 ...
+##  $ pitch_belt              : num  8.07 8.07 8.07 8.05 8.07 8.06 8.09 8.13 8.16 8.17 ...
+##  $ yaw_belt                : num  -94.4 -94.4 -94.4 -94.4 -94.4 -94.4 -94.4 -94.4 -94.4 -94.4 ...
+##  $ total_accel_belt        : int  3 3 3 3 3 3 3 3 3 3 ...
+##  $ kurtosis_roll_belt      : Factor w/ 396 levels &quot;-0.016850&quot;,&quot;-0.021024&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ kurtosis_picth_belt     : Factor w/ 316 levels &quot;-0.021887&quot;,&quot;-0.060755&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ skewness_roll_belt      : Factor w/ 394 levels &quot;-0.003095&quot;,&quot;-0.010002&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ skewness_roll_belt.1    : Factor w/ 337 levels &quot;-0.005928&quot;,&quot;-0.005960&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ max_roll_belt           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ max_picth_belt          : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ max_yaw_belt            : Factor w/ 67 levels &quot;-0.1&quot;,&quot;-0.2&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ min_roll_belt           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ min_pitch_belt          : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ min_yaw_belt            : Factor w/ 67 levels &quot;-0.1&quot;,&quot;-0.2&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ amplitude_roll_belt     : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ amplitude_pitch_belt    : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ var_total_accel_belt    : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ avg_roll_belt           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ stddev_roll_belt        : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ var_roll_belt           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ avg_pitch_belt          : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ stddev_pitch_belt       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ var_pitch_belt          : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ avg_yaw_belt            : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ stddev_yaw_belt         : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ var_yaw_belt            : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ gyros_belt_x            : num  0 0.02 0 0.02 0.02 0.02 0.02 0.02 0.02 0.03 ...
+##  $ gyros_belt_y            : num  0 0 0 0 0.02 0 0 0 0 0 ...
+##  $ gyros_belt_z            : num  -0.02 -0.02 -0.02 -0.03 -0.02 -0.02 -0.02 -0.02 -0.02 0 ...
+##  $ accel_belt_x            : int  -21 -22 -20 -22 -21 -21 -22 -22 -20 -21 ...
+##  $ accel_belt_y            : int  4 4 5 3 2 4 3 4 2 4 ...
+##  $ accel_belt_z            : int  22 22 23 21 24 21 21 21 24 22 ...
+##  $ magnet_belt_x           : int  -3 -7 -2 -6 -6 0 -4 -2 1 -3 ...
+##  $ magnet_belt_y           : int  599 608 600 604 600 603 599 603 602 609 ...
+##  $ magnet_belt_z           : int  -313 -311 -305 -310 -302 -312 -311 -313 -312 -308 ...
+##  $ roll_arm                : num  -128 -128 -128 -128 -128 -128 -128 -128 -128 -128 ...
+##  $ pitch_arm               : num  22.5 22.5 22.5 22.1 22.1 22 21.9 21.8 21.7 21.6 ...
+##  $ yaw_arm                 : num  -161 -161 -161 -161 -161 -161 -161 -161 -161 -161 ...
+##  $ total_accel_arm         : int  34 34 34 34 34 34 34 34 34 34 ...
+##  $ var_accel_arm           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ gyros_arm_x             : num  0 0.02 0.02 0.02 0 0.02 0 0.02 0.02 0.02 ...
+##  $ gyros_arm_y             : num  0 -0.02 -0.02 -0.03 -0.03 -0.03 -0.03 -0.02 -0.03 -0.03 ...
+##  $ gyros_arm_z             : num  -0.02 -0.02 -0.02 0.02 0 0 0 0 -0.02 -0.02 ...
+##  $ accel_arm_x             : int  -288 -290 -289 -289 -289 -289 -289 -289 -288 -288 ...
+##  $ accel_arm_y             : int  109 110 110 111 111 111 111 111 109 110 ...
+##  $ accel_arm_z             : int  -123 -125 -126 -123 -123 -122 -125 -124 -122 -124 ...
+##  $ magnet_arm_x            : int  -368 -369 -368 -372 -374 -369 -373 -372 -369 -376 ...
+##  $ magnet_arm_y            : int  337 337 344 344 337 342 336 338 341 334 ...
+##  $ magnet_arm_z            : int  516 513 513 512 506 513 509 510 518 516 ...
+##  $ kurtosis_yaw_arm        : Factor w/ 394 levels &quot;-0.01548&quot;,&quot;-0.01749&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ skewness_yaw_arm        : Factor w/ 394 levels &quot;-0.00311&quot;,&quot;-0.00562&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ max_picth_arm           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ max_yaw_arm             : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ min_yaw_arm             : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ amplitude_yaw_arm       : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ roll_dumbbell           : num  13.1 13.1 12.9 13.4 13.4 ...
+##  $ pitch_dumbbell          : num  -70.5 -70.6 -70.3 -70.4 -70.4 ...
+##  $ yaw_dumbbell            : num  -84.9 -84.7 -85.1 -84.9 -84.9 ...
+##  $ kurtosis_roll_dumbbell  : Factor w/ 397 levels &quot;-0.0035&quot;,&quot;-0.0073&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ kurtosis_picth_dumbbell : Factor w/ 400 levels &quot;-0.0163&quot;,&quot;-0.0233&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ skewness_roll_dumbbell  : Factor w/ 400 levels &quot;-0.0082&quot;,&quot;-0.0096&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ skewness_pitch_dumbbell : Factor w/ 401 levels &quot;-0.0053&quot;,&quot;-0.0084&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ max_roll_dumbbell       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ max_picth_dumbbell      : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ max_yaw_dumbbell        : Factor w/ 72 levels &quot;-0.1&quot;,&quot;-0.2&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ min_roll_dumbbell       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ min_pitch_dumbbell      : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ min_yaw_dumbbell        : Factor w/ 72 levels &quot;-0.1&quot;,&quot;-0.2&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ amplitude_roll_dumbbell : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ amplitude_pitch_dumbbell: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ total_accel_dumbbell    : int  37 37 37 37 37 37 37 37 37 37 ...
+##  $ var_accel_dumbbell      : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ avg_roll_dumbbell       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ stddev_roll_dumbbell    : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ var_roll_dumbbell       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ avg_pitch_dumbbell      : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ stddev_pitch_dumbbell   : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ var_pitch_dumbbell      : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ avg_yaw_dumbbell        : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ stddev_yaw_dumbbell     : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ var_yaw_dumbbell        : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ gyros_dumbbell_x        : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ gyros_dumbbell_y        : num  -0.02 -0.02 -0.02 -0.02 -0.02 -0.02 -0.02 -0.02 -0.02 -0.02 ...
+##  $ gyros_dumbbell_z        : num  0 0 0 -0.02 0 0 0 0 0 0 ...
+##  $ accel_dumbbell_x        : int  -234 -233 -232 -232 -233 -234 -232 -234 -232 -235 ...
+##  $ accel_dumbbell_y        : int  47 47 46 48 48 48 47 46 47 48 ...
+##  $ accel_dumbbell_z        : int  -271 -269 -270 -269 -270 -269 -270 -272 -269 -270 ...
+##  $ magnet_dumbbell_x       : int  -559 -555 -561 -552 -554 -558 -551 -555 -549 -558 ...
+##  $ magnet_dumbbell_y       : int  293 296 298 303 292 294 295 300 292 291 ...
+##  $ magnet_dumbbell_z       : num  -65 -64 -63 -60 -68 -66 -70 -74 -65 -69 ...
+##  $ roll_forearm            : num  28.4 28.3 28.3 28.1 28 27.9 27.9 27.8 27.7 27.7 ...
+##  $ pitch_forearm           : num  -63.9 -63.9 -63.9 -63.9 -63.9 -63.9 -63.9 -63.8 -63.8 -63.8 ...
+##  $ yaw_forearm             : num  -153 -153 -152 -152 -152 -152 -152 -152 -152 -152 ...
+##  $ max_picth_forearm       : num  NA NA NA NA NA NA NA NA NA NA ...
+##   [list output truncated]</code></pre>
+</div>
+<div id="further-clean-up" class="section level2">
+<h2>Further Clean-up</h2>
+<p>Some variables in the resulting training set above have a lot of NAs. So, I am going to remove variables with a lot of NAs. If more than 70% of the data is NA in any column, then remove the column.</p>
+<pre class="r"><code>new_train_trunc &lt;- data.frame(matrix(ncol = ncol(train_trunc), nrow = nrow(train_trunc))) # create an empty data frame
+j &lt;- 1
+for(i in 1:length(train_trunc))
+{
+    if(sum(is.na(train_trunc[,i]))/nrow(train_trunc) &lt;= 0.6 )
+    {
+        new_train_trunc[,j] &lt;- train_trunc[,i]
+        colnames(new_train_trunc)[j] &lt;- colnames(train_trunc)[i]
+        class(new_train_trunc[,j]) &lt;- class(train_trunc[,i])
+        j &lt;- j + 1
+    }
+}
+new_train_trunc &lt;- new_train_trunc[,-seq(j,max(j,ncol(new_train_trunc)))] # remove unnecessary columns from the data frame</code></pre>
+<p>Now, we must truncate the testing data as well to make sure it matches with the training data. First get all column names from training data except the “classe” variable</p>
+<pre class="r"><code>col_names_final &lt;- colnames(new_train_trunc[, -ncol(new_train_trunc)])
+new_test_trunc &lt;- test[col_names_final]
+colnames_train_v2 &lt;-colnames(new_train_trunc)
+colnames_test_v2 &lt;-colnames(new_test_trunc)
+x &lt;- length(new_test_trunc)
+all.equal(colnames_train_v2[1:x], colnames_test_v2[1:x])</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="model-fitting-1---using-classification-trees" class="section level2">
+<h2>Model Fitting 1 - using classification trees</h2>
+<p>We are now ready to fit data and predict on testing. We will use classification tree first since it chooses the importance of variables automatically to build the predictor algorithm. Create a small cross-varidation set from training data to test accuracy</p>
+<pre class="r"><code>set.seed(2000)
+crossvalidation &lt;- createDataPartition(y=new_train_trunc$classe, p=0.25, list=FALSE)
+train_rpart &lt;- new_train_trunc[-crossvalidation,]
+cv_rpart &lt;- new_train_trunc[crossvalidation,]
+model_rpart &lt;- train(classe ~., data = train_rpart, method = &quot;rpart&quot;)
+fancyRpartPlot(model_rpart$finalModel)</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAACSVBMVEUAAAAAABEAABsAAB0AACIAAC4AADAAADIAADgAADoAAD4AAFMAAFoAAGMAAGYAGCoAKzUALEMAMVcANHQANYsAOH4AOjoAOmYAOpAATlQAV24AXJIAXrAAYp8AZmYAZpAAZrYbAAAbLBsbbmUlAAAlMSIleoUuAAAuTgAujFQujHYyAAAyNTgyhNQzAAAzODIzisE5AAA5PD85gbE6AAA6ADo6AGY6OgA6OpA6ZrY6kJA6kLY6kNtBAABBVwBBm5tCLABCbhtCbjBCqHZTTgBTxHZZAABZqPdbMQBbej5buptcAABcYgBcr59cr+BjbhtjxHZkAABkS0pmAABmADpmAGZmOgBmZjpmZmZmZpBmkJBmpM5mtttmtv9zVwBz2Zt0jDB0qEN0xFR0xGV0xHZ9NQB9hGN9yfeAOACAi...(line truncated)...
+<pre class="r"><code>predictions_rpart &lt;- predict(model_rpart, cv_rpart)
+confusionMatrix(predictions_rpart, cv_rpart$classe)</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 920 104   3   0   0
+##          B 228 371 130 283  78
+##          C 244 475 723 521 427
+##          D   0   0   0   0   0
+##          E   3   0   0   0 397
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.4913          
+##                  95% CI : (0.4773, 0.5054)
+##     No Information Rate : 0.2843          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.3622          
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.6595  0.39053   0.8446   0.0000  0.44013
+## Specificity            0.9695  0.81830   0.5885   1.0000  0.99925
+## Pos Pred Value         0.8958  0.34037   0.3025      NaN  0.99250
+## Neg Pred Value         0.8776  0.84831   0.9472   0.8362  0.88795
+## Prevalence             0.2843  0.19360   0.1744   0.1638  0.18382
+## Detection Rate         0.1875  0.07561   0.1473   0.0000  0.08090
+## Detection Prevalence   0.2093  0.22213   0.4871   0.0000  0.08152
+## Balanced Accuracy      0.8145  0.60441   0.7166   0.5000  0.71969</code></pre>
+<pre class="r"><code>predict(model_rpart, new_test_trunc)</code></pre>
+<pre><code>##  [1] B A C A C C C C A A C C C A C C C B B C
+## Levels: A B C D E</code></pre>
+</div>
+<div id="classfication-tree-results" class="section level2">
+<h2>Classfication tree results</h2>
+<p>The accuracy is 49.13% which is very low. To improve the accuracy, we try preprocessing of centering and scaling in case it improves.</p>
+<pre class="r"><code>model_rpart_v2 &lt;- train(classe ~., data = train_rpart, preProcess=c(&quot;center&quot;, &quot;scale&quot;), method = &quot;rpart&quot;)
+fancyRpartPlot(model_rpart_v2$finalModel)</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAACTFBMVEUAAAAAABEAABsAAB0AACIAAC4AADAAADIAADgAADoAAD4AAFMAAFoAAGMAAGYAGCoAKzUALEMAMVcANHQANYsAOH4AOjoAOmYAOpAATlQAV24AXJIAXrAAYp8AZmYAZpAAZrYbAAAbLBsbbmUlAAAlMSIleoUuAAAuTgAujFQujHYyAAAyNTgyhNQzAAAzODIzisE5AAA5PD85gbE6AAA6ADo6AGY6OgA6OpA6ZrY6kJA6kLY6kNtBAABBVwBBm5tCLABCbhtCbjBCqHZTTgBTxHZZAABZqPdbMQBbej5buptcAABcYgBcr59cr+BjbhtjxHZkAABkS0pmAABmADpmAGZmOgBmZjpmZmZmZpBmkJBmpM5mtttmtv9zVwBz2Zt0jDB0qEN0xFR0xGV0xHZ9NQB9hGN9yfeAOACAi...(line truncated)...
+<pre class="r"><code>predictions_rpart_v2 &lt;- predict(model_rpart_v2, cv_rpart)
+confusionMatrix(predictions_rpart_v2, cv_rpart$classe)</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 920 104   3   0   0
+##          B 228 371 130 283  78
+##          C 244 475 723 521 427
+##          D   0   0   0   0   0
+##          E   3   0   0   0 397
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.4913          
+##                  95% CI : (0.4773, 0.5054)
+##     No Information Rate : 0.2843          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.3622          
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.6595  0.39053   0.8446   0.0000  0.44013
+## Specificity            0.9695  0.81830   0.5885   1.0000  0.99925
+## Pos Pred Value         0.8958  0.34037   0.3025      NaN  0.99250
+## Neg Pred Value         0.8776  0.84831   0.9472   0.8362  0.88795
+## Prevalence             0.2843  0.19360   0.1744   0.1638  0.18382
+## Detection Rate         0.1875  0.07561   0.1473   0.0000  0.08090
+## Detection Prevalence   0.2093  0.22213   0.4871   0.0000  0.08152
+## Balanced Accuracy      0.8145  0.60441   0.7166   0.5000  0.71969</code></pre>
+<p>The accuracy remained unchanged at 66.13%. One way to improve the accuracy is by using multiple random samplings of data, predicting using classification trees on each random samplings, and using the majority predicted class as the final predicted class function. But, here, we will try an alternate approach of random forests. Using random forests automatically uses cross-validated sets and random sampling in its implementation, so we expect a higher accuracy. The downside is that it takes a longer time i...(line truncated)...
+</div>
+<div id="model-fitting-2---using-random-forests" class="section level2">
+<h2>Model Fitting 2 - using random forests</h2>
+<pre class="r"><code>set.seed(3000)
+train_subset &lt;- createDataPartition(y=new_train_trunc$classe, p=0.1, list=FALSE) # use the training set as used in rpart
+train_rf &lt;- new_train_trunc[train_subset,]
+model_rf &lt;- train(classe ~. , data=train_rf, method=&quot;rf&quot;)</code></pre>
+</div>
+<div id="fine-tune-model-using-only-top-20-important-variables" class="section level2">
+<h2>Fine-tune model using only top 20 important variables</h2>
+<pre class="r"><code>Imp_variables_obj &lt;- varImp(model_rf)
+plot(Imp_variables_obj, main = &quot;Top 20 important variables out of 80 in random forest model&quot;, 20)</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAAAolBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZmYAZpAAZrYAgP86AAA6OgA6Ojo6OpA6ZmY6kJA6kLY6kNtmAABmOgBmZgBmZjpmZmZmkJBmtrZmtv+QOgCQZgCQkDqQkGaQkNuQtpCQ29uQ2/+2ZgC2kDq2tma2tv+225C2/7a2/9u2///bkDrbtmbb25Db29vb/7bb/9vb////tmb/25D//7b//9v///8TdTO5AAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO29C5vjNmJoye6Md6W6GcflseNRr2dzzdiZMfdOYna3/v9fW7zfoCgWVILEc77PVoECQIiiTuNFYDgDAMAmhnsXAADgUUGgAAAbQaAAABtBoAAAG0GgAAAbQaAAABtBoAAAG0GgAAAbQaAAABtBoAAAG0GgAAAbQ...(line truncated)...
+<pre class="r"><code>quantile_75 &lt;- quantile(Imp_variables_obj$importance[,1], 0.75)
+Imp_variables_obj$importance[,1] &gt; quantile_75</code></pre>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE
+## [12] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [23]  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE
+## [34] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE
+## [45] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+## [56] FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE  TRUE  TRUE  TRUE
+## [67]  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+## [78] FALSE FALSE</code></pre>
+<pre class="r"><code>important_variables &lt;- c(&quot;cvtd_timestamp&quot;,&quot;roll_belt&quot;,&quot;pitch_forearm&quot;,&quot;raw_timestamp_part_1&quot;,&quot;accel_belt_z&quot;,&quot;roll_dumbbell&quot;,&quot;accel_forearm_x&quot;,&quot;yaw_belt&quot;,&quot;magnet_dumbbell_y&quot;,&quot;num_window&quot;,&quot;magnet_dumbbell_x&quot;,&quot;total_accel_belt&quot;,&quot;magnet_belt_y&quot;,&quot;magnet_dumbbell_z&quot;,&quot;accel_dumbbell_y&quot;,&quot;pitch_belt&quot;,&quot;pitch_dumbbell&quot;,&quot;ro...(line truncated)...
+
+final_train &lt;- train_rpart[,important_variables]
+final_cv &lt;- cv_rpart[,important_variables]
+final_test &lt;- new_test_trunc[,important_variables[-19]] # remove &quot;classe&quot; from the test set as it does not exist in the test set</code></pre>
+</div>
+<div id="final-prediction" class="section level2">
+<h2>Final Prediction</h2>
+<p>Do final models based on random forests and predict it on final_cv_test for confusion matrix/accuracy</p>
+<pre class="r"><code>partition &lt;- createDataPartition(y = final_train$classe, p = 0.25, list = FALSE)
+model_rf_final &lt;- train(classe ~. , data=final_train[partition,], method=&quot;rf&quot;, preProcess=c(&quot;center&quot;, &quot;scale&quot;), trControl=trainControl(method = &quot;cv&quot;, number = 4))
+predictions_rf &lt;- predict(model_rf_final, final_cv)
+confusionMatrix(predictions_rf, final_cv$classe)</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 1395    3    0    0    0
+##          B    0  947    5    0    0
+##          C    0    0  849    0    0
+##          D    0    0    2  804    5
+##          E    0    0    0    0  897
+## 
+## Overall Statistics
+##                                          
+##                Accuracy : 0.9969         
+##                  95% CI : (0.995, 0.9983)
+##     No Information Rate : 0.2843         
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+##                                          
+##                   Kappa : 0.9961         
+##  Mcnemar's Test P-Value : NA             
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            1.0000   0.9968   0.9918   1.0000   0.9945
+## Specificity            0.9991   0.9987   1.0000   0.9983   1.0000
+## Pos Pred Value         0.9979   0.9947   1.0000   0.9914   1.0000
+## Neg Pred Value         1.0000   0.9992   0.9983   1.0000   0.9988
+## Prevalence             0.2843   0.1936   0.1744   0.1638   0.1838
+## Detection Rate         0.2843   0.1930   0.1730   0.1638   0.1828
+## Detection Prevalence   0.2849   0.1940   0.1730   0.1653   0.1828
+## Balanced Accuracy      0.9996   0.9978   0.9959   0.9991   0.9972</code></pre>
+<pre class="r"><code>predictions_rf_test &lt;- predict(model_rf_final, final_test)
+predictions_rf_test</code></pre>
+<pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B
+## Levels: A B C D E</code></pre>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
